@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: ntemplate
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: nicks-test-docker-project
+    name: nicks-test-docker-project
+  spec:
+    replicas: 1
+    selector:
+      app: nicks-test-docker-project
+      deploymentconfig: dc-nicks-test-docker-project
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100M
+    template:
+      metadata:
+        labels:
+          app: nicks-test-docker-project
+          deploymentconfig: dc-nicks-test-docker-project
+      spec:
+        containers:
+          - image: artifacts.mitre.org:8308/int/test-docker-project:0.0.2
+            imagePullPolicy: Always
+            name: c-test-docker-project
+            ports:
+              - containerPort: 8000
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100M
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
